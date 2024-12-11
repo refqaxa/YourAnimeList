@@ -1,0 +1,52 @@
+﻿@model IEnumerable<YourAnimeList.Models.Anime>
+
+@{
+    ViewData["Title"] = "Animes";
+}
+
+@* we need to have lists for each user *@
+
+<h1>Index</h1>
+
+<p>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    }
+    else {
+        <p>Log in om een Anime title toe te voegen</p>
+    }
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Episodes)</th>
+            <th>@Html.DisplayNameFor(model => model.Aired)</th>
+            <th>Added By</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Episodes</td>
+                <td>@item.Aired.ToShortDateString()</td>
+                <td>@item.AddedBy</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+
+                    @if (User.Identity.IsAuthenticated && (User.Identity.Name.Split('@')[0] == item.AddedBy || User.IsInRole("Admin")))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,38 @@
+﻿@model IEnumerable<YourAnimeList.Models.UserAnimeList>
+
+<h1>My Anime List</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Episodes</th>
+            <th>Aired</th>
+            <th>Added On</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Anime.Name</td>
+                <td>@item.Anime.Episodes</td>
+                <td>@item.Anime.Aired.ToShortDateString()</td>
+                <td>@item.AddedOn.ToShortDateString()</td>
+                <td class="d-flex gap-2">
+                    <a asp-action="Details" asp-controller="Animes" asp-route-id="@item.Anime.Id" class="btn btn-info btn-sm">Details</a>
+                    <form asp-action="Delete" asp-controller="UserAnimeLists" method="post">
+                        <input type="hidden" name="animeId" value="@item.AnimeId" />
+                        <button type="submit" class="btn btn-danger btn-sm">Delete from your list</button>
+                    </form>
+                    @* @if (User.Identity.Name.Split('@')[0] == item.Anime.AddedBy || User.IsInRole("Admin")) *@
+                    @* { *@
+                    @*     <a asp-action="Edit" asp-route-id="@item.Anime.Id" class="btn btn-warning btn-sm">Edit</a> *@
+                    @*     <a asp-action="Delete" asp-route-id="@item.Anime.Id" class="btn btn-danger btn-sm">Delete</a> *@
+                    @* } *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

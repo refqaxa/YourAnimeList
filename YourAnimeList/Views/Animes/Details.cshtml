@@ -1,0 +1,46 @@
+﻿@model YourAnimeList.Models.Anime
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Anime</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Name</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Name)</dd>
+
+        <dt class="col-sm-2">Added By</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.AddedBy)</dd>
+
+        <dt class="col-sm-2">Episodes</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Episodes)</dd>
+
+        <dt class="col-sm-2">Aired</dt>
+        <dd class="col-sm-10">@Model.Aired.ToShortDateString()</dd>
+    </dl>
+</div>
+
+<div class="d-flex gap-2 mt-4">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+
+    @if (!(bool)ViewBag.IsInUserList)
+    {
+        <form asp-controller="UserAnimeLists" asp-action="Add" method="post">
+            <input type="hidden" name="animeId" value="@Model.Id" />
+            <button type="submit" class="btn btn-success">Add to My List</button>
+        </form>
+    }
+    else
+    {
+        <form asp-controller="UserAnimeLists" asp-action="Delete" method="post">
+            <input type="hidden" name="animeId" value="@Model.Id" />
+            <button type="submit" class="btn btn-danger">Remove from My List</button>
+        </form>
+    }
+
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
