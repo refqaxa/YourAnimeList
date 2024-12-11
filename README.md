@@ -52,11 +52,16 @@ This ASP.NET Core MVC application allows users to manage a list of anime, perfor
 public class Anime
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
+    public string Name { get; set; }
+
+    public string Description { get; set; }
+
     public int Episodes { get; set; }
+
     public DateTime Aired { get; set; }
-    public string AddedBy { get; set; } = string.Empty;
+
+    public string AddedBy { get; set; }
+
     public List<UserAnimeList>? UserAnimeLists { get; set; }
 }
 ```
@@ -65,10 +70,16 @@ public class Anime
 public class UserAnimeList
 {
     public Guid Id { get; set; }
-    public string UserId { get; set; }
+
+    // Foreign Key to the Anime model
     public Guid AnimeId { get; set; }
-    public Anime Anime { get; set; } = null!;
-    public ApplicationUser User { get; set; } = null!;
+    public Anime Anime { get; set; }
+
+    // Foreign Key to the Application User
+    public string UserId { get; set; }
+    public ApplicationUser User { get; set; }
+
+    public DateTime AddedOn { get; set; }
 }
 ```
 
@@ -134,7 +145,7 @@ This project is open-source and available under the MIT License.
 
 ---
 ## **Contributors**
-- Your Name (Project Owner)
+- 
 
 ---
 ## **Contact**
