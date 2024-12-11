@@ -12,7 +12,6 @@ namespace YourAnimeList.Data
         {
         }
         public DbSet<Anime> Animes { get; set; } 
-            //= default!;
         public DbSet<UserAnimeList> UserAnimeLists { get; set; }
     }
 }

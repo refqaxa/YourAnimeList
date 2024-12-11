@@ -26,11 +26,6 @@
                         <input type="hidden" name="animeId" value="@item.AnimeId" />
                         <button type="submit" class="btn btn-danger btn-sm">Delete from your list</button>
                     </form>
-                    @* @if (User.Identity.Name.Split('@')[0] == item.Anime.AddedBy || User.IsInRole("Admin")) *@
-                    @* { *@
-                    @*     <a asp-action="Edit" asp-route-id="@item.Anime.Id" class="btn btn-warning btn-sm">Edit</a> *@
-                    @*     <a asp-action="Delete" asp-route-id="@item.Anime.Id" class="btn btn-danger btn-sm">Delete</a> *@
-                    @* } *@
                 </td>
             </tr>
         }

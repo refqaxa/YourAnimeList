@@ -44,7 +44,6 @@ namespace YourAnimeList.Controllers
                 isInUserList = await _context.UserAnimeLists
                     .AnyAsync(x => x.AnimeId == id && x.UserId == userId);
             }
-
             ViewBag.IsInUserList = isInUserList;
 
             return View(anime);
@@ -53,10 +52,8 @@ namespace YourAnimeList.Controllers
         // GET: Animes/Create
         public IActionResult Create()
         {
-            if (User.Identity == null)
-            {
-                return Forbid();
-            }
+            if (User.Identity == null) return Forbid();
+
             return View();
         }
 
@@ -71,7 +68,6 @@ namespace YourAnimeList.Controllers
             {
                 Anime anime = new Anime()
                 {
-                    //Id = Guid.NewGuid(),
                     Name  = animeModel.Name,
                     Description = animeModel.Description,
                     Episodes = animeModel.Episodes,
@@ -90,17 +86,26 @@ namespace YourAnimeList.Controllers
         // GET: Animes/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
+            // check if item exists
             if (id == null) return NotFound();
 
             var anime = await _context.Animes.FindAsync(id);
             if (anime == null) return NotFound();
-            string rightUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != rightUsername && User.IsInRole("Admin"))
-            {
-                return Forbid(); // Prevent unauthorized edits
-            }
 
-            return View(anime);
+            // Prevent unauthorized edits
+            string rightUsername = User.Identity.Name.Split('@')[0];
+            if (anime.AddedBy != rightUsername && User.IsInRole("Admin")) return Forbid();
+
+            var vm = new AnimeViewModel()
+            {
+                Id = anime.Id,
+                Name = anime.Name,
+                Description = anime.Description,
+                Episodes = anime.Episodes,
+                Aired = anime.Aired
+            };
+
+            return View(vm);
         }
 
         // POST: Animes/Edit/5
@@ -108,27 +113,28 @@ namespace YourAnimeList.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Description,Episodes,Aired,AddedBy")] Anime anime)
+        public async Task<IActionResult> Edit(Guid id, AnimeViewModel vm)
         {
-            if (id != anime.Id) return NotFound();
+            if (id != vm.Id) return NotFound();
 
-            if (!ModelState.IsValid) return View(anime);  // Preserve form data on validation failure
+            // Preserve form data on validation failure
+            if (!ModelState.IsValid) return View(vm);
 
-            var existingAnime = await _context.Animes.FindAsync(id);
-            if (existingAnime == null) return NotFound();
+            var anime = await _context.Animes.FindAsync(id);
+            if (anime == null) return NotFound();
 
             string rightUsername = User.Identity.Name.Split('@')[0];
-            if (existingAnime.AddedBy != rightUsername && !User.IsInRole("Admin")) return Forbid();
+            if (anime.AddedBy != rightUsername && !User.IsInRole("Admin")) return Forbid();
 
             // Update properties safely
-            existingAnime.Name = anime.Name;
-            existingAnime.Description = anime.Description;
-            existingAnime.Episodes = anime.Episodes;
-            existingAnime.Aired = anime.Aired;
+            anime.Name = anime.Name;
+            anime.Description = anime.Description;
+            anime.Episodes = anime.Episodes;
+            anime.Aired = anime.Aired;
 
             try
             {
-                _context.Update(existingAnime);
+                _context.Update(anime);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -149,11 +155,10 @@ namespace YourAnimeList.Controllers
             var anime = await _context.Animes
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (anime == null) return NotFound();
+
             string rightUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != rightUsername && !User.IsInRole("Admin"))
-            {
-                return Forbid(); // Prevent unauthorized edits
-            }
+            if (anime.AddedBy != rightUsername && !User.IsInRole("Admin")) return Forbid(); 
+
             return View(anime);
         }
 
@@ -164,10 +169,8 @@ namespace YourAnimeList.Controllers
         {
             var anime = await _context.Animes.FindAsync(id);
             string rightUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != rightUsername && !User.IsInRole("Admin"))
-            {
-                return Forbid(); // Prevent unauthorized edits
-            }
+            if (anime.AddedBy != rightUsername && !User.IsInRole("Admin")) return Forbid();
+
             if (anime != null) _context.Animes.Remove(anime);
 
             await _context.SaveChangesAsync();

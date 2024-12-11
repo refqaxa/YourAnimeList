@@ -20,20 +20,14 @@ namespace YourAnimeList
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            //This line adds a developer-specific exception filter for database-related exceptions.
-            //When enabled, if there’s a database - related error(e.g., a migration is missing or a
-            //connection fails), the application will show a detailed error page during development,
-            //helping you quickly identify and fix the problem.
+            //add a developer-specific exception filter for database-related exceptions(shows db errors details in a page)
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            //AddDefaultIdentity<IdentityUser>:
-            //Registers default ASP.NET Core Identity services for managing user authentication and authorization.
-            //options => options.SignIn.RequireConfirmedAccount = true:
-            //This line configures the sign-in behavior, requiring users to confirm their email before they can log in.
+            // Registers default ASP.NET Core Identity services for managing user authentication and authorization and
+            // configure the sign-in behavior, requiring users to confirm their email before they can log in.
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            //AddEntityFrameworkStores<ApplicationDbContext>():
-            //Specifies that Identity should use Entity Framework Core (EF Core) with ApplicationDbContext to 
-            //store and manage user data (e.g., user accounts, roles, claims).
+            // Specify that Identity should use Entity Framework Core (EF Core) with ApplicationDbContext to 
+            // store and manage user data (e.g., user accounts, roles, claims).
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Registers MVC services
