@@ -3,6 +3,12 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Dit is een versie zonder styling.</p>
+    @if (User.IsInRole("Admin")){
+        <h1 class="display-4">Welcome Admin~ </h1>
+        <p>You can do everything! you got the power to delete or edit every anime in this website.</p>
+    }
+    else{
+        <h1 class="display-4">Welcome to Your Anime List</h1>
+        <p>the free open website for everyone to see Anime details, add one by yourself or look for one from our database.</p>
+    }
 </div>

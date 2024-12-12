@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,8 +23,14 @@ namespace YourAnimeList.Controllers
         }
 
         // GET: Animes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchQuery)
         {
+            //// Check if the current user is in the Admin role
+            //if (User.IsInRole("Admin"))
+            //{
+            //    return View("AdminDashboard");
+            //}
+
             return View(await _context.Animes.ToListAsync());
         }
 
@@ -88,13 +95,12 @@ namespace YourAnimeList.Controllers
         {
             // check if item exists
             if (id == null) return NotFound();
-
             var anime = await _context.Animes.FindAsync(id);
             if (anime == null) return NotFound();
 
             // Prevent unauthorized edits
             string currentUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != currentUsername || User.IsInRole("Admin")) return Forbid();
+            if (anime.AddedBy != currentUsername && !User.IsInRole("Admin")) return Forbid();
 
             var vm = new AnimeViewModel()
             {
@@ -124,7 +130,7 @@ namespace YourAnimeList.Controllers
             if (anime == null) return NotFound();
 
             string currentUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != currentUsername || User.IsInRole("Admin")) return Forbid();
+            if (anime.AddedBy != currentUsername && !User.IsInRole("Admin")) return Forbid();
 
             // Update properties safely
             anime.Name = vm.Name;
@@ -157,7 +163,7 @@ namespace YourAnimeList.Controllers
             if (anime == null) return NotFound();
 
             string currentUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != currentUsername || User.IsInRole("Admin")) return Forbid(); 
+            if (anime.AddedBy != currentUsername && !User.IsInRole("Admin")) return Forbid();
 
             return View(anime);
         }
@@ -169,7 +175,7 @@ namespace YourAnimeList.Controllers
         {
             var anime = await _context.Animes.FindAsync(id);
             string currentUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != currentUsername || User.IsInRole("Admin")) return Forbid();
+            if (anime.AddedBy != currentUsername && !User.IsInRole("Admin")) return Forbid();
 
             if (anime != null) _context.Animes.Remove(anime);
 
