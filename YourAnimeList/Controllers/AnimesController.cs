@@ -93,8 +93,8 @@ namespace YourAnimeList.Controllers
             if (anime == null) return NotFound();
 
             // Prevent unauthorized edits
-            string rightUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != rightUsername && User.IsInRole("Admin")) return Forbid();
+            string currentUsername = User.Identity.Name.Split('@')[0];
+            if (anime.AddedBy != currentUsername || User.IsInRole("Admin")) return Forbid();
 
             var vm = new AnimeViewModel()
             {
@@ -123,14 +123,14 @@ namespace YourAnimeList.Controllers
             var anime = await _context.Animes.FindAsync(id);
             if (anime == null) return NotFound();
 
-            string rightUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != rightUsername && !User.IsInRole("Admin")) return Forbid();
+            string currentUsername = User.Identity.Name.Split('@')[0];
+            if (anime.AddedBy != currentUsername || User.IsInRole("Admin")) return Forbid();
 
             // Update properties safely
-            anime.Name = anime.Name;
-            anime.Description = anime.Description;
-            anime.Episodes = anime.Episodes;
-            anime.Aired = anime.Aired;
+            anime.Name = vm.Name;
+            anime.Description = vm.Description;
+            anime.Episodes = vm.Episodes;
+            anime.Aired = vm.Aired;
 
             try
             {
@@ -156,8 +156,8 @@ namespace YourAnimeList.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (anime == null) return NotFound();
 
-            string rightUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != rightUsername && !User.IsInRole("Admin")) return Forbid(); 
+            string currentUsername = User.Identity.Name.Split('@')[0];
+            if (anime.AddedBy != currentUsername || User.IsInRole("Admin")) return Forbid(); 
 
             return View(anime);
         }
@@ -168,8 +168,8 @@ namespace YourAnimeList.Controllers
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var anime = await _context.Animes.FindAsync(id);
-            string rightUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != rightUsername && !User.IsInRole("Admin")) return Forbid();
+            string currentUsername = User.Identity.Name.Split('@')[0];
+            if (anime.AddedBy != currentUsername || User.IsInRole("Admin")) return Forbid();
 
             if (anime != null) _context.Animes.Remove(anime);
 

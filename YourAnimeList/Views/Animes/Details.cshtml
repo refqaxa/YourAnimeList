@@ -25,22 +25,25 @@
 </div>
 
 <div class="d-flex gap-2 mt-4">
-    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+    @if (User.Identity.IsAuthenticated && (User.Identity.Name.Split('@')[0] == Model.AddedBy || User.IsInRole("Admin")))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+    }
 
     @if (!(bool)ViewBag.IsInUserList)
     {
         <form asp-controller="UserAnimeLists" asp-action="Add" method="post">
-            <input type="hidden" name="animeId" value="@Model.Id" />
+            <input type="hidden" name="animeId" value="@Model?.Id" />
             <button type="submit" class="btn btn-success">Add to My List</button>
         </form>
     }
     else
     {
         <form asp-controller="UserAnimeLists" asp-action="Delete" method="post">
-            <input type="hidden" name="animeId" value="@Model.Id" />
+            <input type="hidden" name="animeId" value="@Model?.Id" />
             <button type="submit" class="btn btn-danger">Remove from My List</button>
         </form>
     }
 
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to Anime List</a>
 </div>

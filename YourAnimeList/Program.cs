@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using System.Reflection;
 using System.Security.Principal;
 using YourAnimeList.Data;
+using YourAnimeList.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace YourAnimeList
@@ -35,6 +36,7 @@ namespace YourAnimeList
 
             var app = builder.Build();
 
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -60,6 +62,23 @@ namespace YourAnimeList
             app.MapRazorPages();
 
             app.Run();
+        }
+        public static async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            string[] roleNames = { "Admin", "User", "Moderator" }; 
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    var role = new IdentityRole(roleName);
+                    await roleManager.CreateAsync(role);
+                }
+            }
         }
     }
 }
