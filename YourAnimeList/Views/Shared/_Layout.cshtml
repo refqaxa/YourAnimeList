@@ -21,27 +21,28 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark @((ViewData["Title1"] as string) == "Home" ? "btn-secondary" : "")"
+                               asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Animes" asp-action="Index">Anime List</a>
+                            <a class="nav-link text-dark @((ViewData["Title"] as string) == "Anime List" ? "btn-secondary" : "")"
+                               asp-area="" asp-controller="Animes" asp-action="Index">Anime List</a>
                         </li>
 
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="UserAnimeLists" asp-action="Index">My List</a>
+                                <a class="nav-link text-dark @((ViewData["Title2"] as string) == "My List" ? "btn-secondary" : "")"
+                                   asp-area="" asp-controller="UserAnimeLists" asp-action="Index">My List</a>
                             </li>
                         }
-
                         <li class="nav-item ms-auto">
                             <form class="d-flex" asp-controller="Animes" asp-action="Index" method="get">
-                                <input class="form-control me-2" type="search" placeholder="Search anime" aria-label="Search" name="query" />
-                                <button class="btn btn-outline-light" type="submit">Search</button>
+                                <input class="form-control me-2" type="search" placeholder="Search anime" aria-label="Search" name="SearchQuery" />
+                                <button class="btn btn-outline-dark" type="submit">Search</button>
                             </form>
                         </li>
                     </ul>
-
                     <partial name="_LoginPartial" />
                 </div>
             </div>

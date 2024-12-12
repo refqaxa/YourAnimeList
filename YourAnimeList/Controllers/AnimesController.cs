@@ -23,16 +23,53 @@ namespace YourAnimeList.Controllers
         }
 
         // GET: Animes
-        public async Task<IActionResult> Index(string? searchQuery)
+        public async Task<IActionResult> Index(string? searchQuery, string? sortOrder, int page = 1)
         {
-            //// Check if the current user is in the Admin role
-            //if (User.IsInRole("Admin"))
-            //{
-            //    return View("AdminDashboard");
-            //}
+            int pageSize = 10; // Number of records to display per page
+            IQueryable<Anime> animes = _context.Animes;
 
-            return View(await _context.Animes.ToListAsync());
+            // Apply search query if provided
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                animes = animes.Where(a => a.Name.Contains(searchQuery)); // Filter by search query
+            }
+
+            // Apply sorting
+            switch (sortOrder)
+            {
+                case "Episodes":
+                    animes = animes.OrderBy(a => a.Episodes);
+                    break;
+                case "Aired":
+                    animes = animes.OrderBy(a => a.Aired);
+                    break;
+                case "AddedBy":
+                    animes = animes.OrderBy(a => a.AddedBy);
+                    break;
+                case "Name":
+                default:
+                    animes = animes.OrderBy(a => a.Name);
+                    break;
+            }
+
+            int totalAnimes = await animes.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalAnimes / (double)pageSize);
+
+            // Apply pagination
+            animes = animes.Skip((page - 1) * pageSize).Take(pageSize);
+
+            var viewModel = new AnimeIndexViewModel
+            {
+                Animes = await animes.ToListAsync(),
+                SearchQuery = searchQuery,
+                TotalPages = totalPages,
+                CurrentPage = page
+            };
+
+            return View(viewModel);
         }
+
+
 
         // GET: Animes/Details/5
         public async Task<IActionResult> Details(Guid? id)
@@ -100,7 +137,7 @@ namespace YourAnimeList.Controllers
 
             // Prevent unauthorized edits
             string currentUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != currentUsername && !User.IsInRole("Admin")) return Forbid();
+            if (anime.AddedBy.ToLower() != currentUsername && !User.IsInRole("Admin")) return Forbid();
 
             var vm = new AnimeViewModel()
             {
@@ -130,7 +167,7 @@ namespace YourAnimeList.Controllers
             if (anime == null) return NotFound();
 
             string currentUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != currentUsername && !User.IsInRole("Admin")) return Forbid();
+            if (anime.AddedBy.ToLower() != currentUsername && !User.IsInRole("Admin")) return Forbid();
 
             // Update properties safely
             anime.Name = vm.Name;
@@ -163,7 +200,7 @@ namespace YourAnimeList.Controllers
             if (anime == null) return NotFound();
 
             string currentUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != currentUsername && !User.IsInRole("Admin")) return Forbid();
+            if (anime.AddedBy.ToLower() != currentUsername && !User.IsInRole("Admin")) return Forbid();
 
             return View(anime);
         }
@@ -175,7 +212,7 @@ namespace YourAnimeList.Controllers
         {
             var anime = await _context.Animes.FindAsync(id);
             string currentUsername = User.Identity.Name.Split('@')[0];
-            if (anime.AddedBy != currentUsername && !User.IsInRole("Admin")) return Forbid();
+            if (anime.AddedBy.ToLower() != currentUsername && !User.IsInRole("Admin")) return Forbid();
 
             if (anime != null) _context.Animes.Remove(anime);
 
