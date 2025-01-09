@@ -27,7 +27,7 @@ This ASP.NET Core MVC application allows users to manage a list of anime, perfor
 ### Installation Steps
 1. Clone the repository:
    ```shell
-   git clone https://github.com/your-repo/YourAnimeList.git
+   git clone git@github.com:refqaxa/YourAnimeList.git
    ```
 2. Open the project in Visual Studio.
 3. Update `appsettings.json` with your SQL Server connection string:
