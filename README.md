@@ -2,6 +2,13 @@
 
 This ASP.NET Core MVC application allows users to manage a list of anime, perform CRUD operations, and maintain user-specific anime lists. The app supports authentication, authorization, and role-based access control.
 
+# Overview
+
+![YourAnimeList Animes list screenshot](images/1.png)
+![YourAnimeList user anime list screenshot](images/2.png)
+![YourAnimeList main Animes list screenshot](images/3.png)
+![YourAnimeList main Animes list admin view screenshot](images/4.png)
+
 ---
 ## **Features**
 - **CRUD Operations**: Create, Read, Update, and Delete anime entries.
@@ -33,7 +40,7 @@ This ASP.NET Core MVC application allows users to manage a list of anime, perfor
 3. Update `appsettings.json` with your SQL Server connection string:
    ```json
    "ConnectionStrings": {
-     "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=YourAnimeList;Trusted_Connection=True;"
+     "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=YourAnimeListDb;Trusted_Connection=True;"
    }
    ```
 4. Apply database migrations:
